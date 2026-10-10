@@ -2,8 +2,6 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-IMAGE_PATH = r"C:\Users\mmudo\OneDrive\Dokumenter\Supercurricular\Chemistry Neural Net\Project - Multilabel\example.png"
-
 def calibrate_axis(image_path):
     #pick 4 points on the graph for extracting data (like cropping the image)
     
@@ -64,4 +62,4 @@ def digitise_spectrum(image_path, x_values, y_values):
     x_data = np.array([pixel_to_x(px) for px, py in curve_points])
     y_data = np.array([pixel_to_y(py) for px, py in curve_points])
 
-    return x_data, y_data
+    return x_data, y_data
