@@ -36,3 +36,10 @@ Training spectra: https://radar4chem.radar-service.eu/radar/en/dataset/OGoEQGlsZ
 
 
 *UI was created by Codex, but all backend code is my own
+
+## Data setup
+Download the datasets linked below, then either place them in a `data/` folder next to each `Main.py` (`data/chemotion/` and `data/pretraining/`) or set these environment variables:
+- `IR_CHEMOTION_ROOT` - the Chemotion folder containing `data/dataset/meta_data.json`
+- `IR_PRETRAIN_DIR` - the folder containing the simulated-spectra `.parquet` chunks
+
+To predict from an image, run `python Main.py path/to/spectrum.png` (the UI folder falls back to `Images/Amide.jpg`).

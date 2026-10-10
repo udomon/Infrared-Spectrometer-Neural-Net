@@ -1,3 +1,6 @@
+import os
+import sys
+from pathlib import Path
 import numpy as np
 import pandas as pd
 from rdkit import Chem
@@ -10,12 +13,20 @@ from Dataset import IRSpectrumDataset
 from Models import SpectrumCNN, SpectrumNet, SpectrumNetBigger
 from Train import train_model, find_best_threshold, evaluate_on_test
 
-META_PATH = r'10.22000-OGoEQGlsZGElrgst\10.22000-OGoEQGlsZGElrgst\data\dataset\meta_data.json'
-EXP_FOLDER = r'10.22000-OGoEQGlsZGElrgst\10.22000-OGoEQGlsZGElrgst\data\dataset\JCAMP-DX Files\IR_data\exp'
+# --- Data locations -------------------------------------------------------
+# Set these environment variables to point at your local copies of the data,
+# or leave them unset to use the defaults (folders next to this script).
+#   IR_CHEMOTION_ROOT : the downloaded Chemotion folder that contains data/dataset/meta_data.json
+#   IR_PRETRAIN_DIR   : folder containing the simulated-spectra .parquet chunks
+HERE = Path(__file__).resolve().parent
+CHEMOTION_ROOT = Path(os.environ.get("IR_CHEMOTION_ROOT", HERE / "data" / "chemotion"))
+META_PATH = CHEMOTION_ROOT / "data" / "dataset" / "meta_data.json"
+EXP_FOLDER = CHEMOTION_ROOT / "data" / "dataset" / "JCAMP-DX Files" / "IR_data" / "exp"
+PRETRAIN_DIR = Path(os.environ.get("IR_PRETRAIN_DIR", HERE / "data" / "pretraining"))
 IBMFILES = [
-    r"C:\Users\mmudo\Documents\Programming\ML Datasets\IR_data_chunk001_of_009.parquet",
-    r"C:\Users\mmudo\Documents\Programming\ML Datasets\IR_data_chunk002_of_009.parquet"
-    ]
+    PRETRAIN_DIR / "IR_data_chunk001_of_009.parquet",
+    PRETRAIN_DIR / "IR_data_chunk002_of_009.parquet",
+]
 
 
 FUNCTIONAL_GROUPS = {
@@ -95,4 +106,4 @@ if __name__ == "__main__":
     target_grid = np.linspace(400, 4000, 1000)
 
     #pretrain_on_ibm(compiled_patterns, target_grid)
-    finetune_on_chemotion(compiled_patterns, target_grid)
+    finetune_on_chemotion(compiled_patterns, target_grid)

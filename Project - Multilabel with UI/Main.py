@@ -1,3 +1,5 @@
+import os
+import sys
 import json
 import numpy as np
 from pathlib import Path
@@ -15,12 +17,20 @@ from Train import train_model, find_best_threshold, evaluate_on_test
 from Predict import predict_from_arrays, predict_from_file, print_predictions
 from Digitise import digitise_spectrum
 
-META_PATH = r'10.22000-OGoEQGlsZGElrgst\10.22000-OGoEQGlsZGElrgst\data\dataset\meta_data.json'
-EXP_FOLDER = r'10.22000-OGoEQGlsZGElrgst\10.22000-OGoEQGlsZGElrgst\data\dataset\JCAMP-DX Files\IR_data\exp'
+# --- Data locations -------------------------------------------------------
+# Set these environment variables to point at your local copies of the data,
+# or leave them unset to use the defaults (folders next to this script).
+#   IR_CHEMOTION_ROOT : the downloaded Chemotion folder that contains data/dataset/meta_data.json
+#   IR_PRETRAIN_DIR   : folder containing the simulated-spectra .parquet chunks
+HERE = Path(__file__).resolve().parent
+CHEMOTION_ROOT = Path(os.environ.get("IR_CHEMOTION_ROOT", HERE / "data" / "chemotion"))
+META_PATH = CHEMOTION_ROOT / "data" / "dataset" / "meta_data.json"
+EXP_FOLDER = CHEMOTION_ROOT / "data" / "dataset" / "JCAMP-DX Files" / "IR_data" / "exp"
+PRETRAIN_DIR = Path(os.environ.get("IR_PRETRAIN_DIR", HERE / "data" / "pretraining"))
 IBMFILES = [
-    r"C:\Users\mmudo\Documents\Programming\ML Datasets\IR_data_chunk001_of_009.parquet",
-    r"C:\Users\mmudo\Documents\Programming\ML Datasets\IR_data_chunk002_of_009.parquet"
-    ]
+    PRETRAIN_DIR / "IR_data_chunk001_of_009.parquet",
+    PRETRAIN_DIR / "IR_data_chunk002_of_009.parquet",
+]
 
 
 FUNCTIONAL_GROUPS = {
@@ -151,7 +161,8 @@ if __name__ == "__main__":
     # print_predictions(result)
 
     #for image
-    IMG_PATH = r"C:\Users\mmudo\OneDrive\Dokumenter\Supercurricular\Chemistry Neural Net\Project - Multilabel copy\Images\Amide.jpg"
+    # Pass an image path as the first argument, or fall back to the bundled example
+    IMG_PATH = sys.argv[1] if len(sys.argv) > 1 else str(HERE / "Images" / "Amide.jpg")
     x_data, y_data = digitise_spectrum(IMG_PATH, x_values=(4000, 400), y_values=(0.0, 1.0))
     result = predict_from_arrays(model, x_data, y_data, target_grid, label_names, thresholds)
     print_predictions(result)

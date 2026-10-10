@@ -1,3 +1,6 @@
+import os
+import sys
+from pathlib import Path
 import numpy as np
 from rdkit import Chem
 from torch.utils.data import DataLoader
@@ -8,8 +11,15 @@ from Dataset import IRSpectrumDataset
 from Models import SpectrumCNN
 from Train import train_model, find_best_threshold, evaluate_on_test
 
-META_PATH = r'10.22000-OGoEQGlsZGElrgst\10.22000-OGoEQGlsZGElrgst\data\dataset\meta_data.json'
-EXP_FOLDER = r'10.22000-OGoEQGlsZGElrgst\10.22000-OGoEQGlsZGElrgst\data\dataset\JCAMP-DX Files\IR_data\exp'
+# --- Data locations -------------------------------------------------------
+# Set these environment variables to point at your local copies of the data,
+# or leave them unset to use the defaults (folders next to this script).
+#   IR_CHEMOTION_ROOT : the downloaded Chemotion folder that contains data/dataset/meta_data.json
+#   IR_PRETRAIN_DIR   : folder containing the simulated-spectra .parquet chunks
+HERE = Path(__file__).resolve().parent
+CHEMOTION_ROOT = Path(os.environ.get("IR_CHEMOTION_ROOT", HERE / "data" / "chemotion"))
+META_PATH = CHEMOTION_ROOT / "data" / "dataset" / "meta_data.json"
+EXP_FOLDER = CHEMOTION_ROOT / "data" / "dataset" / "JCAMP-DX Files" / "IR_data" / "exp"
 
 FUNCTIONAL_GROUPS = {
     'carbonyl': '[CX3]=[OX1]',
@@ -44,4 +54,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main()
